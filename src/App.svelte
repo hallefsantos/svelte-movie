@@ -1,58 +1,81 @@
 <script>
-import Info from './components/Info.svelte'
-</script>
+	import Info from './components/Info.svelte'
+	import { fetchMovies, fetchMovie } from './api/movie'
 
-<main class="min-h-screen antialiased bg-center bg-cover" style="background-image: url(https://image.tmdb.org/t/p/original/xJHokMbljvjADYdit5fK5VQsXEG.jpg)">
-	<div class="min-h-screen outer-container">
-		<nav>
-			<div>
-				<img src="" alt="">
+	let movies = []
+	let movie
+	const movieId = Math.floor(Math.random() * 1000)
+	console.log(movieId)
+
+	const search = async () => {
+		const res = await fetchMovies('pulp')
+		movies = res.data.results
+		console.log(movies)
+	}
+
+	const searchMovie = async (movieId) => {
+		const res = await fetchMovie(movieId)
+		movie = res.data
+		console.log(movie)
+	}
+
+	searchMovie(movieId);
+</script>
+{#if movie}
+	<main class="min-h-screen antialiased bg-center bg-cover" style="background-image: url(https://image.tmdb.org/t/p/original/{movie.backdrop_path})">
+		<div class="min-h-screen pb-10 outer-container">
+			<nav class="py-10">
+				<div class="max-w-5xl px-3 mx-auto">
+					<div class="flex justify-between items-center">
+						<img class="w-32" src="https://skempin.github.io/reactjs-tmdb-app/images/tmdb.svg" alt="">
+
+						<div class="w-2/5">
+							<input class="w-full p-2 focus:outline-none bg-transparent text-white border-b-2" type="text" placeholder="Search Movie Title...">
+						</div>
+					</div>
+				</div>
+			</nav>
 
 				<div>
-					<input type="text">
-				</div>
-			</div>
-		</nav>
+					<div class="max-w-5xl px-3 mx-auto">
+						<div class="flex text-white bg-black">
+							<!-- Image -->
+							<div class="w-2/5">
+								<img src="https://image.tmdb.org/t/p/w500/{movie.poster_path}" alt="Interestellar">
+							</div>
 
-		<div>
-			<div class="max-w-5xl px-3 mx-auto">
-				<div class="flex text-white bg-black">
-					<!-- Image -->
-					<div class="w-2/5">
-						<img src="https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg" alt="Interestellar">
-					</div>
+							<!-- Content -->
+							<div class="w-3/5 py-8 pl-5">
+								<h1 class="text-5xl font-bold uppercase">{movie.original_title}</h1>
+								<h2 class="text-xl text-green-400">Mankind was born on Earth. It was never meant to die here.</h2>
+								<p>The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.</p>
 
-					<!-- Content -->
-					<div class="w-3/5 py-8 pl-5">
-						<h1 class="text-5xl font-bold uppercase">INTERSTELLAR</h1>
-						<h2 class="text-xl text-green-400">Mankind was born on Earth. It was never meant to die here.</h2>
-						<p>The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.</p>
+								<div class="mt-8">
+									<h3 class="text-2xl text-green-400">Adventure, Drama, Science Fiction</h3>
+									<div>Legendary Pictures, Syncopy, Lynda Obst Productions</div>
+								</div>
 
-						<div class="mt-8">
-							<h3 class="text-2xl text-green-400">Adventure, Drama, Science Fiction</h3>
-							<div>Legendary Pictures, Syncopy, Lynda Obst Productions</div>
-						</div>
-
-						<div class="grid grid-cols-2 mt-4">
-							<Info label="Original release">
-								2014-11-05
-							</Info>
-							<Info label="Running Time">
-								2014-11-05
-							</Info>
-							<Info label="Box Office">
-								2014-11-05
-							</Info>
-							<Info label="Vote Average">
-								2014-11-05
-							</Info>
+								<div class="grid grid-cols-2 mt-4">
+									<Info label="Original release">
+										2014-11-05
+									</Info>
+									<Info label="Running Time">
+										2014-11-05
+									</Info>
+									<Info label="Box Office">
+										2014-11-05
+									</Info>
+									<Info label="Vote Average">
+										2014-11-05
+									</Info>
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 		</div>
-	</div>
-</main>
+	</main>
+{/if}
 
 <footer class="py-5 text-sm font-light text-center text-white bg-gray-900">
 		<a href="https://hallef.com" target="_blank">

@@ -1,4 +1,5 @@
 <script>
+	import { fade, fly } from 'svelte/transition';
 	import Info from './components/Info.svelte'
 	import { fetchMovies, fetchMovie } from './api/movie'
 

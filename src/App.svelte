@@ -6,7 +6,12 @@
 	let movies = []
 	let movie
 	const movieId = Math.floor(Math.random() * 1000)
+	let term = ''
+	const limit = 5
 
+	const search = async (term) => {
+		const res = await fetchMovies(term)
+		movies = res.data.results.slice(0, limit)
 	}
 
 	const searchMovie = async (movieId) => {
@@ -14,7 +19,19 @@
 		movie = res.data
 	}
 
+	const selectMovie = (movieId) => {
+		movies = []
+		searchMovie(movieId)
+		term = ''
+	}
 
+	searchMovie(movieId)
+
+	$: if(term.length > 2){
+		search(term)
+	} else {
+		movies = []
+	}
 </script>
 {#if movie}
 	<main class="min-h-screen antialiased bg-center bg-cover" style="background-image: url(https://image.tmdb.org/t/p/original/{movie.backdrop_path})">
@@ -24,8 +41,24 @@
 					<div class="flex justify-between items-center">
 						<img class="w-32" src="https://skempin.github.io/reactjs-tmdb-app/images/tmdb.svg" alt="">
 
-						<div class="w-2/5">
-							<input class="w-full p-2 focus:outline-none bg-transparent text-white border-b-2" type="text" placeholder="Search Movie Title...">
+						<div class="w-2/5 relative">
+							<input 
+								class="w-full p-2 focus:outline-none bg-transparent text-white border-b-2" 
+								type="text" 
+								placeholder="Search Movie Title..."
+								bind:value={term}>
+							{#if movies.length > 0}
+								<div 
+									in:fly="{{ y: 50, duration: 750 }}" 
+									out:fade
+									class="absolute w-full bg-white">
+									{#each movies as movie}
+										<div 
+											class="py-2 px-3 cursor-pointer hover:bg-gray-200"
+											on:click={selectMovie(movie.id)}>{movie.original_title}</div>	
+									{/each}
+								</div>
+							{/if}
 						</div>
 					</div>
 				</div>
